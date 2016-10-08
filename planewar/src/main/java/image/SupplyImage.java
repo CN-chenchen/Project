@@ -2,10 +2,11 @@ package image;
 
 import android.graphics.Bitmap;
 
+import com.example.planewar.SoundPlay;
+
 import java.util.List;
 import java.util.Random;
 
-import static com.example.planewar.GameView.pool;
 import static utils.Constants.display_height;
 import static utils.Constants.display_width;
 import static utils.Constants.gameImages;
@@ -29,7 +30,7 @@ public class SupplyImage implements GameImage {
         width = supply.getWidth();
         height = supply.getHeight();
 
-        y = display_height / 3;
+        y = -height;
         Random random = new Random();
         x = random.nextInt(display_width - (supply.getWidth()));
     }
@@ -38,22 +39,11 @@ public class SupplyImage implements GameImage {
 
     @Override
     public Bitmap getBitmap() {
-
-        if (isCatch) {
+        if (isCatch | y > display_height) {
             gameImages.remove(this);
         }
-
-        if (num == 100) {
-            if (x > display_width) {
-                x--;
-            } else {
-                x++;
-            }
-            if (y > display_height) {
-                y--;
-            } else {
-                y++;
-            }
+        if (num == 6) {
+            y++;
             num = 0;
         }
         num++;
@@ -69,7 +59,7 @@ public class SupplyImage implements GameImage {
                     if (image.getX() > x && image.getY() > y && image.getX() < x + width && image.getY() < y + height
                             || image.getX() + ((PlayerImage) image).getWidth() > x && image.getY() > y && image.getX() + ((PlayerImage) image).getWidth() < x + width && image.getY() < y + height) {
                         isCatch = true;
-                        pool.play(sound_get_bullet, 1, 1, 0, 0, 1);
+                        new SoundPlay(sound_get_bullet).start();
                         System.out.println("--得到弹药!");
                         break;
                     }

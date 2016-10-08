@@ -17,6 +17,11 @@ public class MainActivity extends AppCompatActivity implements DialogInterface.O
 
         gameView = new GameView(this);
         setContentView(gameView);
+        initBGM();
+    }
+
+    private void initBGM() {
+
     }
 
     @Override

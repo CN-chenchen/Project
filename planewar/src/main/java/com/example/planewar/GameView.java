@@ -49,11 +49,26 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Run
     private Bitmap bacekground_4;
     private Bitmap bacekground_5;
     private ArrayList<Bitmap> bacekgrounds = new ArrayList<Bitmap>();
+    private Bitmap boss_1;
+    private Bitmap boss_2;
+    private Bitmap boss_3;
+    private Bitmap boss_4;
+    private Bitmap boss_5;
+    private ArrayList<Bitmap> boss = new ArrayList<Bitmap>();
     private Bitmap enemy;
-    private Bitmap player;
+    private Bitmap player_1;
+    private Bitmap player_2;
+    private Bitmap player_3;
+    private Bitmap player_4;
+    private ArrayList<Bitmap> player = new ArrayList<Bitmap>();
     private Bitmap supply;
     private Bitmap bullet_player;
     private Bitmap bullet_enemy;
+    private Bitmap bullet_boss_1;
+    private Bitmap bullet_boss_2;
+    private Bitmap bullet_boss_3;
+    private Bitmap bullet_boss_4;
+    private Bitmap bullet_boss_5;
     private Bitmap bullet_award;
     private Bitmap boom;
     private Bitmap cacheBitmap;//二级缓存
@@ -71,6 +86,9 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Run
     private int sound_boom = 0;
     private int sound_over = 0;
     private int sound_get_bullet = 0;
+    private int sound_music = 0;
+    private int sound_coming = 0;
+    private int sound_boom_boss = 0;
     private BackImage backImage;
     private PlayerImage playerImage;
     private SupplyImage supplyImage;
@@ -102,40 +120,67 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Run
     }
 
     private void init() {
-        //加载照片
-        bacekground_1 = BitmapFactory.decodeResource(getResources(), R.drawable.img_bg_1);
-        bacekground_2 = BitmapFactory.decodeResource(getResources(), R.drawable.img_bg_2);
-        bacekground_3 = BitmapFactory.decodeResource(getResources(), R.drawable.img_bg_3);
-        bacekground_4 = BitmapFactory.decodeResource(getResources(), R.drawable.img_bg_4);
-        bacekground_5 = BitmapFactory.decodeResource(getResources(), R.drawable.img_bg_5);
-        bacekgrounds.add(bacekground_1);
-        bacekgrounds.add(bacekground_2);
-        bacekgrounds.add(bacekground_3);
-        bacekgrounds.add(bacekground_4);
-        bacekgrounds.add(bacekground_5);
+        try {
+            //加载照片
+            bacekground_1 = BitmapFactory.decodeResource(getResources(), R.drawable.img_bg_1);
+            bacekground_2 = BitmapFactory.decodeResource(getResources(), R.drawable.img_bg_2);
+            bacekground_3 = BitmapFactory.decodeResource(getResources(), R.drawable.img_bg_3);
+            bacekground_4 = BitmapFactory.decodeResource(getResources(), R.drawable.img_bg_4);
+            bacekground_5 = BitmapFactory.decodeResource(getResources(), R.drawable.img_bg_5);
+            bacekgrounds.add(bacekground_1);
+            bacekgrounds.add(bacekground_2);
+            bacekgrounds.add(bacekground_3);
+            bacekgrounds.add(bacekground_4);
+            bacekgrounds.add(bacekground_5);
 
-        enemy = BitmapFactory.decodeResource(getResources(), R.drawable.img_enemy);
-        player = BitmapFactory.decodeResource(getResources(), R.drawable.img_player);
-        supply = BitmapFactory.decodeResource(getResources(), R.drawable.img_supply);
-        bullet_player = BitmapFactory.decodeResource(getResources(), R.drawable.img_bullet_plane);
-        bullet_enemy = BitmapFactory.decodeResource(getResources(), R.drawable.img_bullet_enemy);
-        bullet_award = BitmapFactory.decodeResource(getResources(), R.drawable.img_bullet_award);
-        boom = BitmapFactory.decodeResource(getResources(), R.drawable.img_boom);
+            boss_1 = BitmapFactory.decodeResource(getResources(), R.drawable.boss_1);
+            boss_2 = BitmapFactory.decodeResource(getResources(), R.drawable.boss_2);
+            boss_3 = BitmapFactory.decodeResource(getResources(), R.drawable.boss_3);
+            boss_4 = BitmapFactory.decodeResource(getResources(), R.drawable.boss_4);
+            boss_5 = BitmapFactory.decodeResource(getResources(), R.drawable.boss_5);
+            boss.add(boss_1);
+            boss.add(boss_2);
+            boss.add(boss_3);
+            boss.add(boss_4);
+            boss.add(boss_5);
 
-        //生产二级缓存照片
-        cacheBitmap = Bitmap.createBitmap(display_width, display_height, Bitmap.Config.ARGB_8888);
-        backImage = new BackImage(bacekgrounds.get(level - 1));
-        playerImage = new PlayerImage(player, boom);
-        supplyImage = new SupplyImage(supply);
-        gameImages.add(backImage);//先加入背景照片
-        gameImages.add(playerImage);
+            enemy = BitmapFactory.decodeResource(getResources(), R.drawable.img_enemy);
+
+            player_1 = BitmapFactory.decodeResource(getResources(), R.drawable.img_player_1);
+            player_2 = BitmapFactory.decodeResource(getResources(), R.drawable.img_player_2);
+            player_3 = BitmapFactory.decodeResource(getResources(), R.drawable.img_player_3);
+            player_4 = BitmapFactory.decodeResource(getResources(), R.drawable.img_player_4);
+            player.add(player_1);
+            player.add(player_2);
+            player.add(player_3);
+            player.add(player_4);
+
+            supply = BitmapFactory.decodeResource(getResources(), R.drawable.img_supply);
+            bullet_player = BitmapFactory.decodeResource(getResources(), R.drawable.img_bullet_plane);
+            bullet_enemy = BitmapFactory.decodeResource(getResources(), R.drawable.img_bullet_enemy);
+            bullet_award = BitmapFactory.decodeResource(getResources(), R.drawable.img_bullet_award);
+            boom = BitmapFactory.decodeResource(getResources(), R.drawable.img_boom);
+
+            //生产二级缓存照片
+            cacheBitmap = Bitmap.createBitmap(display_width, display_height, Bitmap.Config.ARGB_8888);
+            backImage = new BackImage(bacekgrounds.get(level - 1));
+            playerImage = new PlayerImage(player, boom);
+            supplyImage = new SupplyImage(supply);
+            gameImages.add(backImage);//先加入背景照片
+            gameImages.add(playerImage);
+        } catch (OutOfMemoryError e) {
+            e.printStackTrace();
+        }
 
         //加载声音
-        pool = new SoundPool(15, AudioManager.STREAM_MUSIC, 0);
+        pool = new SoundPool(20, AudioManager.STREAM_MUSIC, 0);
         sound_bullet = pool.load(getContext(), R.raw.bullet, 1);
         sound_boom = pool.load(getContext(), R.raw.boom, 1);
         sound_over = pool.load(getContext(), R.raw.game_over, 1);
         sound_get_bullet = pool.load(getContext(), R.raw.get_bullet, 1);
+        sound_boom_boss = pool.load(getContext(), R.raw.boom_boss, 1);
+        sound_coming = pool.load(getContext(), R.raw.big_spaceship_flying, 1);
+        sound_music = pool.load(getContext(), R.raw.game_music, 1);
     }
 
     @Override
@@ -172,10 +217,22 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Run
                         e.printStackTrace();
                     }
                 }
+                if (update[level - 1][1] <= score) {
+                    target = update[level][1];
+                    enemies = update[level][2];
+                    speed = update[level][3];
+                    score = update[level - 1][1] - score;
+                    level = update[level][0];
+                    gameImages.remove(backImage);
+                    System.gc();
+                    backImage = new BackImage(bacekgrounds.get(level - 1));
+                    gameImages.add(backImage);//先加入背景照片
+                    gameImages.add(playerImage);
+                }
 
                 if (selectPlayer != null) {
-                    if (bullet_player_num == 10) {
-                        new SoundPlay(sound_bullet).start();
+                    if (bullet_player_num == 6) {
+                        pool.play(sound_bullet, 1, 1, 0, 0, 1);
                         if (!isCatch) {
                             bullets_player.add(new PlayerBullet(selectPlayer, bullet_player));
                         } else {
@@ -186,54 +243,19 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Run
                     bullet_player_num++;
                 }
 
-                Canvas newCanvas = new Canvas(cacheBitmap);
-
-                for (GameImage image :
-                        (List<GameImage>) gameImages.clone()) {
-                    newCanvas.drawBitmap(image.getBitmap(), image.getX(), image.getY(), paint);
-                    if (image instanceof EnemyImage) {
-                        //敌方飞机受到攻击
-                        ((EnemyImage) image).attack(bullets_player, sound_boom);
-                    }
-                    if (image instanceof PlayerImage) {
-                        //玩家飞机受到攻击
-                        //((PlayerImage) image).attack(bullets_enemy, sound_over);
-                    }
-                    if (image instanceof SupplyImage) {
-                        ((SupplyImage) image).getBullet(sound_get_bullet);
-                    }
-                }
-                for (GameImage image :
-                        (List<GameImage>) bullets_player.clone()) {
-                    newCanvas.drawBitmap(image.getBitmap(), image.getX(), image.getY(), paint);
-                }
-                for (GameImage image : (List<GameImage>) bullets_enemy.clone()) {
-                    newCanvas.drawBitmap(image.getBitmap(), image.getX(), image.getY(), paint);
-                }
-
-                //分数
-                newCanvas.drawText("score:" + score, 12, 60, score_paint);
-                newCanvas.drawText("level:" + level, 12, 114, score_paint);
-                newCanvas.drawText("target:" + target, 12, 168, score_paint);
-
-                if (update[level - 1][1] <= score) {
-                    target = update[level][1];
-                    enemies = update[level][2];
-                    speed = update[level][3];
-                    score = update[level - 1][1] - score;
-                    level = update[level][0];
-                    gameImages.add(new BackImage(bacekgrounds.get(level - 1)));//先加入背景照片
-                    gameImages.add(playerImage);
-                }
-
                 if (enemy_num == enemies) {
                     enemyImage = new EnemyImage(enemy, boom);
                     gameImages.add(enemyImage);
                     enemy_num = 0;
                 }
                 enemy_num++;
+
+                if (score == 100) {
+                    //gameImages.add(bossImage);
+                }
+
                 if (enemyImage != null) {
-                    if (bullet_enemy_num == 16) {
+                    if (bullet_enemy_num == speed) {
                         bullets_enemy.add(new EnemyBullet(enemyImage, bullet_enemy));
                         bullet_enemy_num = 0;
                     }
@@ -244,6 +266,40 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Run
                         gameImages.add(supplyImage);
                     }
                 }
+
+                Canvas newCanvas = new Canvas(cacheBitmap);
+
+                for (GameImage image : (List<GameImage>) gameImages.clone()) {
+                    newCanvas.drawBitmap(image.getBitmap(), image.getX(), image.getY(), paint);
+                    if (image instanceof EnemyImage) {
+                        //敌方飞机受到攻击
+                        ((EnemyImage) image).attack(sound_boom);
+                    }
+                    if (image instanceof PlayerImage) {
+                        //玩家飞机受到攻击
+                        //((PlayerImage) image).attack(sound_over);
+                    }
+                    if (image instanceof SupplyImage) {
+                        ((SupplyImage) image).getBullet(sound_get_bullet);
+                    }
+//                    if (image instanceof BossImage) {
+//                        //((BossImage) image).attack(sound_boom_boss);
+//                    }
+                }
+
+                for (GameImage image : (List<GameImage>) bullets_player.clone()) {
+                    newCanvas.drawBitmap(image.getBitmap(), image.getX(), image.getY(), paint);
+                }
+
+                for (GameImage image : (List<GameImage>) bullets_enemy.clone()) {
+                    newCanvas.drawBitmap(image.getBitmap(), image.getX(), image.getY(), paint);
+                }
+
+                //分数
+                newCanvas.drawText("score:" + score, 12, 60, score_paint);
+                newCanvas.drawText("level:" + level, 12, 114, score_paint);
+                newCanvas.drawText("target:" + target, 12, 168, score_paint);
+
                 Canvas canvas = holder.lockCanvas();
                 canvas.drawBitmap(cacheBitmap, 0, 0, paint);
                 holder.unlockCanvasAndPost(canvas);
@@ -275,11 +331,9 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Run
                 selectPlayer.setX((int) event.getX() - selectPlayer.getWidth() / 2);
                 selectPlayer.setY((int) event.getY() - selectPlayer.getHeight() / 2);
             }
-
         } else if (event.getAction() == MotionEvent.ACTION_UP) {
             selectPlayer = null;
         }
         return true;
     }
-
 }

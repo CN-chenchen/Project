@@ -2,16 +2,19 @@ package image;
 
 import android.graphics.Bitmap;
 
+import com.example.planewar.SoundPlay;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import static com.example.planewar.GameView.pool;
+import static utils.Constants.bullets_player;
 import static utils.Constants.display_height;
 import static utils.Constants.display_width;
 import static utils.Constants.gameImages;
 import static utils.Constants.score;
 import static utils.Constants.speed;
+import static utils.Constants.target;
 
 /**
  * 负责敌方飞机图片的处理
@@ -27,16 +30,6 @@ public class EnemyImage implements GameImage {
     private int height;
 
     public EnemyImage(Bitmap enemy, Bitmap boom) {
-//            bitmaps.add(Bitmap.createBitmap(enemy, 0, 0, enemy.getWidth() / 10, enemy.getHeight()));
-//            bitmaps.add(Bitmap.createBitmap(enemy, (enemy.getWidth() / 10) * 1, 0, enemy.getWidth() / 10, enemy.getHeight()));
-//            bitmaps.add(Bitmap.createBitmap(enemy, (enemy.getWidth() / 10) * 2, 0, enemy.getWidth() / 10, enemy.getHeight()));
-//            bitmaps.add(Bitmap.createBitmap(enemy, (enemy.getWidth() / 10) * 3, 0, enemy.getWidth() / 10, enemy.getHeight()));
-//            bitmaps.add(Bitmap.createBitmap(enemy, (enemy.getWidth() / 10) * 4, 0, enemy.getWidth() / 10, enemy.getHeight()));
-//            bitmaps.add(Bitmap.createBitmap(enemy, (enemy.getWidth() / 10) * 5, 0, enemy.getWidth() / 10, enemy.getHeight()));
-//            bitmaps.add(Bitmap.createBitmap(enemy, (enemy.getWidth() / 10) * 6, 0, enemy.getWidth() / 10, enemy.getHeight()));
-//            bitmaps.add(Bitmap.createBitmap(enemy, (enemy.getWidth() / 10) * 7, 0, enemy.getWidth() / 10, enemy.getHeight()));
-//            bitmaps.add(Bitmap.createBitmap(enemy, (enemy.getWidth() / 10) * 8, 0, enemy.getWidth() / 10, enemy.getHeight()));
-//            bitmaps.add(Bitmap.createBitmap(enemy, (enemy.getWidth() / 10) * 9, 0, enemy.getWidth() / 10, enemy.getHeight()));
         bitmaps.add(enemy);
 
         booms.add(Bitmap.createBitmap(boom, 0, 0, boom.getWidth() / 6, boom.getHeight() / 2));
@@ -80,20 +73,26 @@ public class EnemyImage implements GameImage {
     }
 
     private boolean dead = false;
+    private int hp = 3;
 
     //受到攻击
-    public void attack(ArrayList<PlayerBullet> bullets_player, int sound_boom) {
+    public void attack(int sound_boom) {
         if (!dead) {
-            for (GameImage image :
-                    (List<GameImage>) bullets_player.clone()) {
+            for (GameImage image : (List<GameImage>) bullets_player.clone()) {
                 if (image.getX() > x && image.getY() > y && image.getX() < x + width && image.getY() < y + height
                         || image.getX() + image.getBitmap().getWidth() > x && image.getY() > y && image.getX() + image.getBitmap().getWidth() < x + width && image.getY() < y + height) {
                     System.out.println("--命中目标");
                     bullets_player.remove(image);
+                    hp--;
+                    break;
+                }
+                if (hp <= 0) {
                     dead = true;
                     bitmaps = booms;
-                    pool.play(sound_boom, 1, 1, 0, 0, 1);
-                    score += 10;
+                    new SoundPlay(sound_boom).start();
+                    if (score < target) {
+                        score += 10;
+                    }
                     break;
                 }
             }

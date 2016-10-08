@@ -29,6 +29,6 @@ public class Constants {
     public static int enemies = 35;//开始出现敌人的数字
     public static int speed = 16;//敌人移动速度
     public static int target = 150;//关卡目标
-    public static int[][] update = {{1, 150, 35, 16}, {2, 150, 30, 17}, {3, 150, 30, 18}, {4, 150, 25, 19}, {5, 150, 25, 20}, {6, 150, 20, 21}};
+    public static int[][] update = {{1, 150, 35, 16}, {2, 150, 30, 19}, {3, 150, 30, 22}, {4, 150, 25, 25}, {5, 150, 25, 28}, {6, 150, 20, 31}};
 
 }

@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 
 import static utils.Constants.bullets_enemy;
 import static utils.Constants.display_height;
+import static utils.Constants.speed;
 
 /**
  * 负责敌方子弹图片的处理
@@ -25,8 +26,8 @@ public class EnemyBullet implements GameImage {
 
     @Override
     public Bitmap getBitmap() {
-        y += 24;
-        if (y >= display_height) {
+        y += speed + 9;
+        if (y > display_height) {
             bullets_enemy.remove(this);
         }
         return bullet_enemy;

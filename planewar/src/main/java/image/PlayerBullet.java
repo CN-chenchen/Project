@@ -3,6 +3,7 @@ package image;
 import android.graphics.Bitmap;
 
 import static utils.Constants.bullets_player;
+import static utils.Constants.speed;
 
 /**
  * 负责玩家子弹图片的处理
@@ -18,13 +19,13 @@ public class PlayerBullet implements GameImage {
         this.bullet_player = bullet_player;
 
         x = player.getX() + player.getWidth() / 2 - bullet_player.getWidth() / 2;
-        y = player.getY() - bullet_player.getHeight();
+        y = player.getY();
     }
 
     @Override
     public Bitmap getBitmap() {
-        y -= 6;
-        if (y <= 0) {
+        y -= speed;
+        if (y < 0) {
             bullets_player.remove(this);
         }
         return bullet_player;
